@@ -1,87 +1,58 @@
 # Library Management
 
-Library Management is a simple object-oriented .NET 8 project for managing books in a library.
+Простая система управления книгами в библиотеке на .NET 8.
 
-The project does not contain REST API, Swagger, JWT, database access, or UI code. It focuses on domain models, repositories, services, business rules, and unit tests.
+Проект реализован без REST API, Swagger, JWT и базы данных. Вся логика находится в обычных классах, данные хранятся в памяти.
 
-## Features
+## Что реализовано
 
-- Register users with one or more roles.
-- Store the current user in a user session.
-- Create requests to take a book.
-- Create requests to return a book.
-- Create requests to add a writer's book to the library.
-- Approve or reject requests as a librarian.
-- Automatically approve requests when the current user is also a librarian.
+* регистрация пользователей;
+* вход и выход пользователя через `UserSession`;
+* роли пользователей: читатель, писатель, библиотекарь;
+* создание заявок на получение книги;
+* создание заявок на возврат книги;
+* создание заявок на добавление книги;
+* одобрение и отклонение заявок библиотекарем;
+* автоматическое одобрение заявки, если пользователь также является библиотекарем.
 
-## Roles
+## Основные правила
 
-- `Reader` creates requests to take and return books.
-- `Writer` creates requests to add own books.
-- `Librarian` approves or rejects created requests.
+* имя пользователя уникально;
+* пользователь может иметь несколько ролей;
+* писатель может добавлять только свои книги;
+* количество экземпляров книги не может превышать тираж;
+* читатель не может взять книгу, которая уже находится у него;
+* после возврата читатель может взять книгу снова.
 
-A user can have several roles at the same time.
-
-## Business Rules
-
-- User names are unique.
-- A writer can create add-book requests only for own books.
-- The number of book copies cannot exceed the copies limit.
-- A reader cannot create a take-book request for a book that is already taken by this reader.
-- A reader can take the same book again after returning it.
-- Requests created by users with the `Librarian` role are approved automatically.
-- Book copies are checked when a request is approved.
-
-## Project Structure
+## Структура проекта
 
 ```text
 LibraryManagement.Core
-  Exceptions
-  Models
-  Repositories
-  Services
-
 LibraryManagement.Tests
-  Models
-  Repositories
-  Services
 ```
 
-## Main Classes
+* `LibraryManagement.Core` — основная логика приложения;
+* `LibraryManagement.Tests` — unit-тесты.
 
-- `User` describes a library user.
-- `Book` describes a book and its copy count.
-- `BookRequest` describes a request and its status.
-- `UserRepository`, `BookRepository`, and `BookRequestRepository` store objects in memory.
-- `UserSession` stores the current user.
-- `UserService` registers users and manages login/logout.
-- `LibraryService` contains the main library business logic.
+## Запуск тестов
 
-## Requirements
-
-- .NET 8 SDK
-
-## Run Tests
-
-```powershell
+```bash
 dotnet test .\LibraryManagement.sln
 ```
 
-## Check Coverage
+## Проверка покрытия
 
-```powershell
+```bash
 dotnet test .\LibraryManagement.sln --collect:"XPlat Code Coverage"
 ```
 
-Current checked result:
+На момент проверки:
 
-```text
-Line coverage: 89.81%
-Branch coverage: 70.00%
-```
+* Line coverage: 89.81%;
+* Branch coverage: 70.00%.
 
-## Check Formatting
+## Проверка форматирования
 
-```powershell
+```bash
 dotnet format .\LibraryManagement.sln --verify-no-changes --verbosity minimal
 ```
